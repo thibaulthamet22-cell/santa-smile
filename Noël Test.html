@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Nouvelles du Pôle Nord — Noël cosy</title>
+
+  <style>
+    :root{
+      --bg1: #3a0f12;    /* bordeaux foncé */
+      --bg2: #102b24;    /* vert sapin foncé */
+      --card: rgba(255,255,255,0.03);
+      --accent: #d4af37; /* doré doux */
+      --muted: rgba(255,255,255,0.75);
+      --glass: rgba(255,255,255,0.06);
+      --max-width: 980px;
+      --radius: 14px;
+      --gap: 16px;
+    }
+
+    /* Reset basique */
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{
+      font-family: "Georgia", serif;
+      background: linear-gradient(180deg,var(--bg1),var(--bg2));
+      color:var(--muted);
+      -webkit-font-smoothing:antialiased;
+      line-height:1.5;
+      overflow-x:hidden;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Page layout */
+    header{
+      position:sticky; top:0; z-index:1200;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .bar{display:flex;align-items:center;justify-content:space-between;padding:10px clamp(12px,3vw,22px)}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{
+      width:46px;height:46px;border-radius:10px;
+      display:inline-flex;align-items:center;justify-content:center;
+      background:linear-gradient(135deg,#8b2a2a,#b34b3b); color:#fff;
+      font-weight:800;font-size:1.1rem;box-shadow:0 6px 18px rgba(0,0,0,0.5);
+    }
+    .site-title{font-size:1rem;color:var(--accent);font-weight:700}
+    .site-sub{font-size:0.75rem;color:rgba(255,255,255,0.6)}
+
+    /* Desktop nav */
+    nav.desktop{display:none}
+    nav.desktop a{color:var(--muted);text-decoration:none;padding:8px 10px;border-radius:8px}
+    nav.desktop a:hover{background:var(--glass);color:var(--accent)}
+
+    /* Mobile hamburger */
+    .menu-btn{background:transparent;border:none;color:var(--muted);font-size:1.6rem;cursor:pointer}
+    .menu-btn:focus{outline:2px solid rgba(212,175,55,0.3);border-radius:8px}
+
+    /* Mobile nav panel */
+    #mobileNav{display:none;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:10px}
+    #mobileNav a{display:block;padding:10px;border-radius:8px;color:var(--muted);text-decoration:none}
+    #mobileNav a:hover{background:var(--glass); color:var(--accent)}
+
+    main{padding:14px;max-width:var(--max-width);margin:16px auto 80px}
+
+    /* Sections */
+    section{margin: var(--gap) 0; background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); padding:16px;border-radius:var(--radius); box-shadow:0 12px 40px rgba(0,0,0,0.45)}
+    h1{font-size:1.6rem;color:var(--accent);text-align:center;margin-bottom:8px}
+    h2{font-size:1.05rem;color:#fff;margin-bottom:8px}
+    p{color:var(--muted);font-size:0.98rem}
+
+    /* Images */
+    img.media{width:100%;height:auto;border-radius:10px;display:block;margin:12px auto;object-fit:cover;box-shadow:0 8px 30px rgba(0,0,0,0.5)}
+    .center {text-align:center}
+
+    /* Audio */
+    .audio-wrap{display:flex;justify-content:center;margin-top:8px}
+    audio{width:100%;max-width:420px;border-radius:8px}
+
+    /* Buttons */
+    .btn{background:linear-gradient(90deg,#8b2a2a,#b34b3b);color:white;border:none;padding:10px 14px;border-radius:10px;font-weight:700;cursor:pointer;box-shadow:0 8px 20px rgba(179,75,59,0.15)}
+    .btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+
+    /* Puzzle responsive container */
+    #puzzle-container{display:grid;gap:6px;margin:12px auto;max-width:420px}
+    .piece{width:100%;aspect-ratio:1/1;background-size:cover;border-radius:8px;border:1px solid rgba(255,255,255,0.04);cursor:grab;transition:transform .12s ease, box-shadow .12s ease}
+    .piece:active{transform:scale(.98);cursor:grabbing}
+    .selected{outline:3px solid rgba(212,175,55,0.25); box-shadow:0 6px 18px rgba(212,175,55,0.06)}
+
+    /* Decorations container (falls on top) */
+    .decorations{pointer-events:none;position:fixed;left:0;top:0;width:100%;height:100%;z-index:1000;overflow:hidden}
+
+    .fall{
+      position:fixed; top:-10%;
+      user-select:none; pointer-events:none;
+      transform: translateY(-20vh);
+      animation-name:fallAnim;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+    @keyframes fallAnim{
+      0% { transform: translateY(-10vh) rotate(0deg); opacity:0; }
+      8% { opacity:1; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity:1; }
+    }
+
+    .star{position:fixed;width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);opacity:0.85;animation:twinkle 2.6s infinite}
+    @keyframes twinkle{0%{opacity:.2}50%{opacity:1}100%{opacity:.2}}
+
+    /* Utility */
+    .muted{color:rgba(255,255,255,0.66)}
+    a.inline{color:var(--accent);text-decoration:none;font-weight:700}
+
+    /* Fade-in helper */
+    .fade-in{opacity:0;animation:fadeIn .9s ease forwards}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+    /* Large screens */
+    @media(min-width:900px){
+      .bar{padding:16px 40px}
+      nav.desktop{display:block}
+      .menu-btn{display:none}
+      #mobileNav{display:none !important}
+      main{padding:26px}
+      h1{font-size:2.2rem}
+      h2{font-size:1.5rem}
+      #puzzle-container{max-width:600px}
+      section{padding:22px}
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Decorations (snow, gingerbread, gifts, stars) -->
+  <div class="decorations" id="decorations" aria-hidden="true"></div>
+
+  <!-- Header / navigation -->
+  <header>
+    <div class="bar" role="banner">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">PN</div>
+        <div>
+          <div class="site-title">Nouvelles du Pôle Nord</div>
+          <div class="site-sub">Ambiance Noël cosy</div>
+        </div>
+      </div>
+
+      <nav class="desktop" aria-label="Navigation principale">
+        <a href="#intro">Accueil</a>
+        <a href="#village">Village</a>
+        <a href="#puzzle">Puzzle</a>
+        <a href="#cadeaux">Cadeaux</a>
+        <a href="#conte">Conte</a>
+        <a href="#recette">Recette</a>
+        <a href="#lutins">Lutins</a>
+      </nav>
+
+      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="mobileNav" title="Ouvrir le menu">☰</button>
+    </div>
+
+    <nav id="mobileNav" aria-label="Navigation mobile" style="display:none">
+      <a href="#intro">Accueil</a>
+      <a href="#village">Village</a>
+      <a href="#puzzle">Puzzle</a>
+      <a href="#cadeaux">Cadeaux</a>
+      <a href="#conte">Conte</a>
+      <a href="#recette">Recette</a>
+      <a href="#lutins">Lutins</a>
+      <a href="compte-rebours.html">Compte à rebours</a>
+    </nav>
+  </header>
+
+  <main role="main">
+
+    <!-- Intro -->
+    <section id="intro" class="fade-in" aria-labelledby="intro-title">
+      <h1 id="intro-title">Bienvenue au Pôle Nord</h1>
+      <p class="muted">Suivez nos aventures et l'avancement des préparatifs de Noël. Appuie sur <strong>play</strong> pour écouter la playlist du Père Noël.</p>
+
+      <div class="audio-wrap" style="margin-top:12px">
+        <!-- PLACE dl.mp3 in same folder or change path -->
+        <audio controls preload="none">
+          <source src="dl.mp3" type="audio/mpeg">
+          Votre navigateur ne supporte pas la balise audio.
+        </audio>
+      </div>
+
+      <img class="media" src="https://img.pikbest.com/origin/09/33/24/47ipIkbEsTjHD.jpg!bw700" alt="Image principale du village">
+    </section>
+
+    <!-- Village -->
+    <section id="village" class="fade-in" aria-labelledby="village-title">
+      <h2 id="village-title">Notre Village</h2>
+      <img class="media" src="https://files.imagetourl.net/uploads/1763501867785-ba8f03cf-38e0-4bb3-9206-fa74cceed250.jpeg" alt="Vue sur la patinoire">
+      <p class="muted"><em>Voici la vue sur la patinoire qui se trouve à quelques pas de notre chalet.</em></p>
+    </section>
+
+    <!-- Puzzle -->
+    <section id="puzzle" class="fade-in" aria-labelledby="puzzle-title">
+      <h2 id="puzzle-title">Puzzle de Noël 🎄</h2>
+      <p class="muted">Recompose l'image du village. Glisse pour échanger ou utilise le mode tactile (toucher pour sélectionner, toucher une autre pièce pour échanger).</p>
+
+      <div id="puzzle-container" aria-label="Puzzle de Noël"></div>
+
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:12px">
+        <button class="btn" id="shuffleBtn" aria-label="Mélanger le puzzle">Mélanger</button>
+        <button class="btn secondary" id="resetBtn" aria-label="Réinitialiser le puzzle">Réinitialiser</button>
+      </div>
+    </section>
+
+    <!-- Cadeaux / compte à rebours link -->
+    <section id="cadeaux" class="fade-in" aria-labelledby="cadeaux-title">
+      <h2 id="cadeaux-title">Compte à rebours & Cadeaux</h2>
+    <img 
+        src="https://images.unsplash.com/photo-1543589077-47d81606c1bf?q=80&w=1200"
+        alt="Décor de Noël"
+        style="max-width:90%; border-radius:12px; box-shadow:0 5px 15px rgba(0,0,0,0.2); margin:20px 0;" >
+
+    <p>
+        <a href="https://www.portablenorthpole.com/fr/combien-de-jours-avant-noel" target="_blank">
+            <em><font size="5" face="Georgia" color="maroon">
+                Cliquez ici pour accéder au compte à rebours de Noël 🎄
+            </font></em>
+        </a>
+    </p>
+
+    </section>
+
+    <!-- Conte -->
+    <section id="conte" class="fade-in" aria-labelledby="conte-title">
+      <h2 id="conte-title">Conte : La Chouette de Givre et le Petit Renard Rouge</h2>
+      <p style="text-align:justify;color:var(--muted);max-width:900px;margin:auto">
+        <!-- Ton conte complet intégré ici (j'ai repris ta version) -->
+           
+    </p>
+      <p style="text-align:justify;color:var(--muted);max-width:900px;margin:auto">
+        Dans la grande forêt argentée, peu avant Noël, la neige tombait doucement sous la lumière de la lune. Lunelle, une chouette blanche perchée dans un vieux chêne, observait la nuit, se sentant un peu seule. C’est alors qu’elle vit un jeune renard roux, Flambois, errer entre les arbres. Perdu dans la neige profonde, il demanda son aide.
+
+Lunelle l’invita à la suivre. Ensemble, ils traversèrent la colline des Sapins Chantants, le ruisseau Gelé et la clairière des Étoiles Tombées. Mais un vent glacial força Lunelle à se poser, ses ailes engourdies par le froid. Flambois la réchauffa en se blottissant contre elle.
+
+Ils reprirent leur route jusqu’à une petite cabane illuminée, la maison des Animaux Voyageurs. Là, Flambois serait en sécurité. Avant d’entrer, il demanda à Lunelle si elle reviendrait. Elle sourit : leurs chemins s’étaient trouvés, et ne se sépareraient plus vraiment.
+
+Depuis ce soir-là, on raconte qu’à chaque hiver, lorsque la neige chante, Lunelle et Flambois se retrouvent : elle pour guider, lui pour réchauffer. Une amitié née sous la neige de Noël, plus précieuse que n’importe quel cadeau.
+      </p>
+
+      <img class="media" src="https://image2url.com/images/1764017258724-d52aa6df-ef5a-487a-a239-c00e9130d595.jpeg" alt="Illustration du conte">
+    </section>
+
+    <!-- Recette -->
+    <section id="recette" class="fade-in" aria-labelledby="recette-title">
+      <h2 id="recette-title">Recette : Gâteau de Noël au chocolat</h2>
+      <img class="media" src="https://image2url.com/images/1764190297678-d9ddf4e5-7f76-45ef-abe3-3a446d6c064c.jpeg" alt="Gâteau de Noël">
+      <p class="muted"><em>Voici une recette chère à Mère-Noël et moi — parfaite pour les soirées d'hiver.</em></p>
+    </section>
+
+    <!-- Lutins -->
+    <section id="lutins" class="fade-in" aria-labelledby="lutins-title">
+      <h2 id="lutins-title">Les Lutins au travail</h2>
+      <img class="media" src="https://image2url.com/images/1764191389266-92643093-54f6-42f1-8f2a-6d27b8703163.jpeg" alt="Lutins préparant les cadeaux">
+      <p class="muted"><em>Regardez les lutins qui s'attellent aux préparatifs des cadeaux !</em></p>
+    </section>
+
+    <footer style="text-align:center;color:rgba(255,255,255,0.5);margin-top:18px;font-size:0.9rem">
+      © Pôle Nord — Crée avec magie ✨
+    </footer>
+
+  </main>
+
+  <!-- JS: menu toggle, decorations, puzzle -->
+  <script>
+  /* ----------------------------
+     Mobile menu toggle
+  ---------------------------- */
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileNav = document.getElementById('mobileNav');
+  menuBtn.addEventListener('click', ()=>{
+    const open = menuBtn.getAttribute('aria-expanded') === 'true';
+    menuBtn.setAttribute('aria-expanded', String(!open));
+    mobileNav.style.display = open ? 'none' : 'block';
+  });
+  document.querySelectorAll('#mobileNav a').forEach(a=>a.addEventListener('click', ()=>{
+    mobileNav.style.display='none'; menuBtn.setAttribute('aria-expanded','false');
+  }));
+
+  /* ----------------------------
+     Decorations: snow + gingerbread + gifts + stars
+  ---------------------------- */
+  const decor = document.getElementById('decorations');
+
+  function makeFall(char, count, minSize=12, maxSize=28, minDur=6, maxDur=14){
+    for(let i=0;i<count;i++){
+      const d = document.createElement('div');
+      d.className = 'fall';
+      d.style.left = (Math.random()*100)+'%';
+      const s = Math.floor(Math.random()*(maxSize-minSize)+minSize);
+      d.style.fontSize = s+'px';
+      d.style.opacity = (Math.random()*0.7)+0.3;
+      d.style.animationDuration = (Math.random()*(maxDur-minDur)+minDur)+'s';
+      d.textContent = char;
+      // slight horizontal motion
+      const offset = (Math.random()*60)-30;
+      d.style.setProperty('--x-offset', offset+'px');
+      decor.appendChild(d);
+    }
+  }
+
+  // Snowflakes
+  makeFall('❄', 36, 8, 20, 6, 12);
+  // Gingerbread cookies
+  makeFall('🍪', 8, 18, 30, 9, 16);
+  // Gifts
+  makeFall('🎁', 8, 16, 26, 10, 18);
+
+  // Stars (static sparkles)
+  for(let i=0;i<14;i++){
+    const st = document.createElement('div');
+    st.className='star';
+    st.style.left = Math.random()*100+'%';
+    st.style.top = Math.random()*60+'%';
+    st.style.animationDelay = Math.random()*2+'s';
+    st.style.opacity = (Math.random()*0.7)+0.3;
+    decor.appendChild(st);
+  }
+
+  /* ----------------------------
+     Puzzle implementation (responsive + touch-friendly)
+     - GRID configurable
+     - drag & drop swap
+     - touch: tap to select then tap to swap
+  ----------------------------*/
+  const puzzleImg = 'https://img.pikbest.com/origin/09/33/24/47ipIkbEsTjHD.jpg!bw700';
+  const GRID = 3; // change to 4 for 4x4
+  const container = document.getElementById('puzzle-container');
+
+  function buildPuzzle(){
+    container.innerHTML = '';
+    // responsive columns: use CSS grid repeat
+    container.style.gridTemplateColumns = `repeat(${GRID}, 1fr)`;
+    for(let i=0;i<GRID*GRID;i++){
+      const piece = document.createElement('div');
+      piece.className = 'piece';
+      piece.draggable = true;
+      piece.dataset.index = i;        // correct index
+      // background-position as percentage
+      const row = Math.floor(i / GRID);
+      const col = i % GRID;
+      const x = (col / (GRID - 1)) * 100;
+      const y = (row / (GRID - 1)) * 100;
+      piece.style.backgroundImage = `url("${puzzleImg}")`;
+      piece.style.backgroundSize = `${GRID * 100}% ${GRID * 100}%`;
+      piece.style.backgroundPosition = `${x}% ${y}%`;
+      piece.dataset.current = i; // initially correct
+      container.appendChild(piece);
+    }
+
+    // attach events
+    const pieces = Array.from(container.children);
+    let dragged = null;
+    let selected = null; // for touch/select-to-swap
+
+    pieces.forEach(p=>{
+      p.addEventListener('dragstart', ()=> dragged = p);
+      p.addEventListener('dragover', e=> e.preventDefault());
+      p.addEventListener('drop', e=>{
+        e.preventDefault();
+        if(!dragged || dragged === p) return;
+        swapPieces(dragged, p);
+        dragged = null;
+        checkWin();
+      });
+
+      // Touch: tap to select then tap second to swap
+      p.addEventListener('click', ()=>{
+        // if already selected and same piece -> deselect
+        if(selected === p){
+          p.classList.remove('selected'); selected = null; return;
+        }
+        if(!selected){
+          selected = p; p.classList.add('selected'); return;
+        }
+        // second selection -> swap
+        swapPieces(selected, p);
+        selected.classList.remove('selected');
+        selected = null;
+        checkWin();
+      });
+
+      // improve touch UX: long-press could be added later
+    });
+  }
+
+  function swapPieces(a,b){
+    // swap backgrounds
+    const bgA = a.style.backgroundPosition;
+    a.style.backgroundPosition = b.style.backgroundPosition;
+    b.style.backgroundPosition = bgA;
+    // swap dataset current
+    const tmp = a.dataset.current;
+    a.dataset.current = b.dataset.current;
+    b.dataset.current = tmp;
+    // visual feedback
+    a.animate([{transform:'scale(1.03)'},{transform:'scale(1)'}],{duration:160});
+    b.animate([{transform:'scale(1.03)'},{transform:'scale(1)'}],{duration:160});
+  }
+
+  function shuffle(){
+    const pieces = Array.from(container.children);
+    for(let i=pieces.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      const bgI = pieces[i].style.backgroundPosition;
+      pieces[i].style.backgroundPosition = pieces[j].style.backgroundPosition;
+      pieces[j].style.backgroundPosition = bgI;
+      const tmp = pieces[i].dataset.current;
+      pieces[i].dataset.current = pieces[j].dataset.current;
+      pieces[j].dataset.current = tmp;
+    }
+  }
+
+  function resetPuzzle(){
+    const pieces = Array.from(container.children);
+    for(let i=0;i<pieces.length;i++){
+      const row = Math.floor(i / GRID);
+      const col = i % GRID;
+      const x = (col / (GRID - 1)) * 100;
+      const y = (row / (GRID - 1)) * 100;
+      pieces[i].style.backgroundPosition = `${x}% ${y}%`;
+      pieces[i].dataset.current = i;
+    }
+  }
+
+  function checkWin(){
+    const pieces = Array.from(container.children);
+    const solved = pieces.every((p,i)=>{
+      const row = Math.floor(i / GRID);
+      const col = i % GRID;
+      const x = (col / (GRID - 1)) * 100;
+      const y = (row / (GRID - 1)) * 100;
+      const expected = `${x}% ${y}%`;
+      return p.style.backgroundPosition === expected;
+    });
+    if(solved){
+      // celebration: small confetti (emoji) + sound (optional)
+      showCelebration();
+    }
+  }
+
+  function showCelebration(){
+    // small confetti emojis falling quickly
+    for(let i=0;i<24;i++){
+      const e = document.createElement('div');
+      e.className='fall';
+      e.style.left = (Math.random()*100)+'%';
+      e.style.fontSize = (Math.random()*18+12)+'px';
+      e.style.animationDuration = (Math.random()*1+1.2)+'s';
+      e.textContent = ['✨','🎉','🎁'][Math.floor(Math.random()*3)];
+      decor.appendChild(e);
+      setTimeout(()=> e.remove(), 2000);
+    }
+    // a lightweight visual + alert
+    setTimeout(()=> alert('🎉 Bravo ! Vous avez reconstitué le puzzle !'), 200);
+  }
+
+  // build & init
+  buildPuzzle();
+  setTimeout(()=> shuffle(), 200);
+
+  document.getElementById('shuffleBtn').addEventListener('click', ()=> shuffle());
+  document.getElementById('resetBtn').addEventListener('click', ()=> resetPuzzle());
+
+  /* ----------------------------
+    Accessibility: smooth scroll for anchor links
+  ----------------------------*/
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    a.addEventListener('click', (e)=>{
+      const target = document.querySelector(a.getAttribute('href'));
+      if(target){
+        e.preventDefault();
+        target.scrollIntoView({behavior:'smooth',block:'start'});
+        // close mobile nav if open
+        if(window.innerWidth < 900){
+          mobileNav.style.display='none';
+          menuBtn.setAttribute('aria-expanded','false');
+        }
+      }
+    });
+  });
+
+  /* ----------------------------
+    Optional: reduce animation on low-power devices
+  ----------------------------*/
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(prefersReduced){
+    document.querySelectorAll('.fall').forEach(n=> n.style.animation = 'none');
+  }
+
+  </script>
+
+</body>
+</html>
