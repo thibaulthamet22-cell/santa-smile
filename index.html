@@ -669,36 +669,35 @@ Et le sapin chuchote toujours :
     </section>
 
 
-<!-- Légende  -->
+<!-- Avent  -->
 
-<section id="avent" class="fade-in" style="padding:60px 20px; max-width:1000px; margin:auto; text-align:center;">
-  <h2>Calendrier de l'Avent 🎁</h2>
-  <p>Clique sur une case pour découvrir la surprise du jour !</p>
+<section id="avent" class="fade-in" style="padding:40px 15px; max-width:1000px; margin:auto; text-align:center;">
+  <h2 style="color:#b3002d; font-size:2rem; margin-bottom:15px;">Calendrier de l'Avent 🎁</h2>
+  <p style="font-size:1rem; color:#333;">Clique sur une case pour découvrir la surprise du jour !</p>
 
-  <div id="calendar" style="display:grid; grid-template-columns:repeat(6, 1fr); gap:10px; justify-items:center; margin-top:30px;">
+  <div id="calendar" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(80px,1fr)); gap:12px; justify-items:center; margin-top:25px;">
     <!-- Cases générées par JS -->
   </div>
 </section>
 
 <script>
-// Contenu pour chaque jour (image ou lien YouTube)
 const aventContent = [
   {text:"J-1 : 🎵 Chanson de Noël", url:"https://www.youtubekids.com/watch?v=N5jDlspik18&hl=fr"},
-  {text:"J-2 : 🎨 Prends un papier, des feutres et fais un déssin du Père Noël"},
-  {text:"J-3 : ⭐ Saint Nicolas, c'est qui celui-la?", url:"https://www.youtubekids.com/watch?v=yHf6lEF0Rkc&hl=fr"},
-  {text:"J-4 : ❄️ Avec du Papier et un ciseau, fabrique des Flocon de Neige ✂️"},
-  {text:"J-5 : 🔥 Feu de Cheminée Féerique", url: "https://www.youtubekids.com/watch?v=8lmKtJGFKQs&hl=fr"},
-  {text:"J-6 : 🦌 Défi du Renne Comète: Trouve 3 objets chez toi qui commencent par la même lettre que ton prénom !"},
-  {text:"J-7 : 🍫 Recette Sablés de Noël", url:"https://www.750g.com/sables-de-noel-r19658.htm"}
-  // ... remplir jusqu'au J-24
+  {text:"J-2 : 🎨 Fait un Dessin du Père Noël"},
+  {text:"J-3 : ⭐ Saint Nicolas, c'est qui celui-là?", url:"https://www.youtubekids.com/watch?v=yHf6lEF0Rkc&hl=fr"},
+  {text:"J-4 : ❄️ Fabrique des flocons de neige ✂️"},
+  {text:"J-5 : 🔥 Feu de cheminée féerique", url:"https://www.youtubekids.com/watch?v=8lmKtJGFKQs&hl=fr"},
+  {text:"J-6 : 🦌 Défi du Renne Comète"},
+  {text:"J-7 : 🍫 Recette sablés de Noël", url:"https://www.750g.com/sables-de-noel-r19658.htm"},
+
 ];
 
-// Génération des cases
 const calendar = document.getElementById("calendar");
+
 for(let i=0;i<24;i++){
-  const caseDiv=document.createElement("div");
-  caseDiv.style.width="100px";
-  caseDiv.style.height="100px";
+  const caseDiv = document.createElement("div");
+  caseDiv.style.width="80px";
+  caseDiv.style.height="80px";
   caseDiv.style.background="#f7d6c1";
   caseDiv.style.borderRadius="12px";
   caseDiv.style.display="flex";
@@ -708,10 +707,14 @@ for(let i=0;i<24;i++){
   caseDiv.style.boxShadow="0 3px 8px rgba(0,0,0,0.2)";
   caseDiv.style.fontWeight="bold";
   caseDiv.style.fontSize="1.2rem";
+  caseDiv.style.transition="transform 0.2s";
   caseDiv.textContent=i+1;
 
-  // Sur clic, afficher contenu
-  caseDiv.addEventListener("click",()=>{
+  caseDiv.addEventListener("mouseenter", ()=> caseDiv.style.transform="scale(1.1)");
+  caseDiv.addEventListener("mouseleave", ()=> caseDiv.style.transform="scale(1)");
+
+  // Sur clic
+  caseDiv.addEventListener("click", ()=>{
     const content = aventContent[i] || {text:"🎁 Surprise à venir !", url:""};
     if(content.url) window.open(content.url,"_blank");
     alert(content.text);
@@ -719,6 +722,7 @@ for(let i=0;i<24;i++){
 
   calendar.appendChild(caseDiv);
 }
+
 
 </script>
 
