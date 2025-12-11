@@ -159,6 +159,8 @@
         <a href="#mémory">Mémory</a>
         <a href="#légende">Légende</a>
         <a href="#avent">Avent</a>
+        <a href="#carte">Carte</a>
+
 
       </nav>
 
@@ -176,6 +178,7 @@
       <a href="#mémory">Mémory</a>
       <a href="#légende">Légende</a>
       <a href="#avent">Avent</a>
+      <a href="#carte">Carte</a>
 
     </nav>
   </header>
@@ -742,6 +745,135 @@ for(let i=0;i<24;i++){
 
 
 </script>
+
+<br>
+<br>
+
+<!-- Carte -->
+<section id="carte" class="fade-in" aria-labelledby="carte-title" style="max-width:900px; margin:auto; text-align:center;">
+
+  <!-- Titre centré -->
+  <h2 id="Carte-title" style="color:var(--muted);">
+    Carte à Gratter
+  </h2>
+
+
+
+<div style="width:90vw; max-width:600px; margin:auto; text-align:center; font-family:'Comic Sans MS', cursive, sans-serif; color:#b20000;">
+  <h2 style="font-size:1.5em; margin-bottom:10px;">Gratte pour découvrir ton cadeau du Père Noël ! 🎁</h2>
+  
+  <div id="scratchCard" style="position:relative; width:100%; aspect-ratio:1; border-radius:15px; overflow:hidden; box-shadow:0 5px 15px rgba(0,0,0,0.3); margin-bottom:10px;">
+    <img src="https://image2url.com/images/1765185919640-f68fda33-6dc0-4fa5-af06-3241e74a840e.jpeg"
+         alt="Surprise du Père Noël"
+         style="width:100%; height:100%; object-fit:cover;">
+    <canvas id="scratchCanvas" style="position:absolute; top:0; left:0;"></canvas>
+  </div>
+
+  <p style="font-size:1em; margin-top:10px;">
+    Ho ho ho ! Gratte avec ton doigt ou ta souris pour révéler la surprise magique ! 🎄
+  </p>
+
+  <div id="finalMessage" style="display:none; font-size:1.1em; margin-top:15px; color:#008000;">
+    🎄 Surprise révélée ! Joyeux Noël ! 🎄<br>
+    Compte les cadeaux et partage ton sourire avec ceux que tu aimes ! 🎁
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById('scratchCanvas');
+const card = document.getElementById('scratchCard');
+const ctx = canvas.getContext('2d');
+const finalMessage = document.getElementById('finalMessage');
+
+// Fonction pour ajuster le canvas à la taille réelle du conteneur
+function resizeCanvas() {
+  canvas.width = card.clientWidth;
+  canvas.height = card.clientHeight;
+  ctx.fillStyle = '#c0c0c0';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+let isDrawing = false;
+
+function getPos(e){
+  const rect = canvas.getBoundingClientRect();
+  const x = e.touches ? e.touches[0].clientX - rect.left : e.clientX - rect.left;
+  const y = e.touches ? e.touches[0].clientY - rect.top : e.clientY - rect.top;
+  return { x, y };
+}
+
+function scratch(e){
+  if(!isDrawing) return;
+  e.preventDefault();
+  const pos = getPos(e);
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.beginPath();
+  ctx.arc(pos.x, pos.y, 20, 0, Math.PI*2);
+  ctx.fill();
+}
+
+canvas.addEventListener('mousedown', ()=>isDrawing=true);
+canvas.addEventListener('mouseup', ()=>isDrawing=false);
+canvas.addEventListener('mousemove', scratch);
+
+canvas.addEventListener('touchstart', ()=>isDrawing=true);
+canvas.addEventListener('touchend', ()=>isDrawing=false);
+canvas.addEventListener('touchmove', scratch);
+
+// Vérifie si la surface est suffisamment grattée
+function checkCompletion(){
+  const data = ctx.getImageData(0,0,canvas.width,canvas.height).data;
+  let scratched = 0;
+  for(let i=3;i<data.length;i+=4){
+    if(data[i]<128) scratched++;
+  }
+  if(scratched > data.length/8){
+    canvas.style.display = 'none';
+    finalMessage.style.display = 'block';
+  }
+}
+setInterval(checkCompletion, 1000);
+
+const GRATE_RADIUS = 12; // rayon plus petit = gratte plus lentement
+const COMPLETION_RATIO = 0.25; // 25% de la surface doit être grattée avant de révéler
+
+function scratch(e){
+  if(!isDrawing) return;
+  e.preventDefault();
+  const pos = getPos(e);
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.beginPath();
+  ctx.arc(pos.x, pos.y, GRATE_RADIUS, 0, Math.PI*2);
+  ctx.fill();
+}
+
+function checkCompletion(){
+  const data = ctx.getImageData(0,0,canvas.width,canvas.height).data;
+  let scratched = 0;
+  for(let i=3;i<data.length;i+=4){
+    if(data[i]<128) scratched++;
+  }
+  if(scratched > data.length * COMPLETION_RATIO){
+    canvas.style.display = 'none';
+    finalMessage.style.display = 'block';
+  }
+}
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
 
       © Pôle Nord — Crée avec magie ✨
 
