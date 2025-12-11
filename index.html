@@ -152,15 +152,16 @@
         <a href="#intro">Accueil</a>
         <a href="#village">Village</a>
         <a href="#puzzle">Puzzle</a>
-        <a href="#cadeaux">Cadeaux</a>
-        <a href="#conte">Conte</a>
+        <a href="#cadeaux">Compte à rebours</a>
+        <a href="#conte">Conte: Chouette et Renard</a>
         <a href="#recette">Recette</a>
         <a href="#lutins">Lutins</a>
         <a href="#mémory">Mémory</a>
-        <a href="#légende">Légende</a>
+        <a href="#légende">Légende du Sapin</a>
         <a href="#avent">Avent</a>
-        <a href="#carte">Carte</a>
-        <a href="#berceuse">Berceuse</a>
+        <a href="#carte">Carte à Gratter</a>
+        <a href="#berceuse">Berceuse des Lutins</a>
+        <a href="#decore-sapin">Décore ton Sapin</a>
 
 
       </nav>
@@ -172,15 +173,16 @@
       <a href="#intro">Accueil</a>
       <a href="#village">Village</a>
       <a href="#puzzle">Puzzle</a>
-      <a href="#cadeaux">Cadeaux</a>
-      <a href="#conte">Conte</a>
+      <a href="#cadeaux">Compte à rebours</a>
+      <a href="#conte">Conte: Chouette et Renard</a>
       <a href="#recette">Recette</a>
       <a href="#lutins">Lutins</a>
       <a href="#mémory">Mémory</a>
-      <a href="#légende">Légende</a>
+      <a href="#légende">Légende du Sapin</a>
       <a href="#avent">Avent</a>
-      <a href="#carte">Carte</a>
-      <a href="#berceuse">Berceuse</a>
+      <a href="#carte">Carte à Gratter</a>
+      <a href="#berceuse">Berceuse des Lutins</a>
+      <a href="#decore-sapin">Décore ton Sapin</a>
 
     </nav>
   </header>
@@ -915,7 +917,7 @@ Il suffit simplement d’une guitare et d’un peu de douceur. 🎄🧡
        alt="Illustration du conte" 
        style="width:850px; max-width:100%; height:auto; display:block; margin:20px auto 0 auto;">
        
-  <!-- Légende centrée -->
+  <!-- Berceuse centrée -->
   <p style="color:var(--muted); margin-top:5px;">
     Illustration du conte
   </p>
@@ -923,6 +925,179 @@ Il suffit simplement d’une guitare et d’un peu de douceur. 🎄🧡
 
 </section>
 
+
+
+   
+
+
+
+<!-- 🎄 Jeu : Décore le Sapin -->
+
+<section id="decore-sapin" style="text-align:center; padding:20px; background:#8B0000; color:white;">
+  <h1>🎄 Décore le Sapin 🎁</h1>
+  <p>Fais glisser les décorations sur le sapin</p>
+
+  <style>
+    #game-sapin{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      margin-top:20px;
+      position:relative;
+    }
+    #tree{
+      width:350px;   /* 🌟 Taille augmentée */
+      height:auto;
+      position:relative;
+      pointer-events:none;
+    }
+    #decor-zone{
+      display:flex;
+      gap:12px;
+      margin-top:20px;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+    .deco{
+      width:55px;
+      height:55px;
+      background:#fff;
+      border-radius:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:2rem;
+      cursor:grab;
+      user-select:none;
+    }
+    .placed{
+      position:absolute;
+      cursor:grab;
+      font-size:2rem;
+      pointer-events:auto;
+    }
+    #resetTree{
+      margin-top:20px;
+      padding:10px 20px;
+      background:white;
+      color:#8B0000;
+      border:none;
+      border-radius:10px;
+      font-weight:bold;
+      cursor:pointer;
+    }
+  </style>
+
+  <div id="game-sapin">
+    <img id="tree" src="https://image2url.com/images/1765457118607-562f69cf-9570-4bb5-9343-20b57dd49dc3.jpg" alt="sapin" />
+    <div id="decor-zone"></div>
+  </div>
+
+  <button id="resetTree">🔄 Recommencer</button>
+
+  <script>
+    const emojisSapin = ["⭐","🔔","🎀","🎁","❄️","🧦","✨","🍬"];
+    const decorZone = document.getElementById("decor-zone");
+    const tree = document.getElementById("tree");
+    const resetBtn = document.getElementById("resetTree");
+
+    let dragged = null;
+    let offsetX = 0, offsetY = 0;
+
+    // Génération des décorations
+    function initDecorations(){
+      decorZone.innerHTML = "";
+      emojisSapin.forEach(e =>{
+        let d = document.createElement("div");
+        d.className = "deco";
+        d.textContent = e;
+        d.draggable = true;
+
+        d.addEventListener("dragstart", dragStart);
+        d.addEventListener("touchstart", dragStartTouch);
+
+        decorZone.appendChild(d);
+      });
+    }
+
+    // Reset total
+    resetBtn.addEventListener("click", resetTree);
+
+    function resetTree(){
+      // Supprimer toutes les décorations placées
+      document.querySelectorAll(".placed").forEach(el => el.remove());
+
+      // Régénérer les décorations
+      initDecorations();
+    }
+
+    function dragStart(e){
+      dragged = e.target.cloneNode(true);
+      dragged.classList.add("placed");
+      document.body.appendChild(dragged);
+
+      offsetX = e.offsetX;
+      offsetY = e.offsetY;
+    }
+
+    function dragStartTouch(e){
+      const touch = e.touches[0];
+      dragged = e.target.cloneNode(true);
+      dragged.classList.add("placed");
+      document.body.appendChild(dragged);
+
+      offsetX = 25;
+      offsetY = 25;
+
+      dragged.style.left = touch.pageX - offsetX + "px";
+      dragged.style.top = touch.pageY - offsetY + "px";
+    }
+
+    // Souris
+    window.addEventListener("dragover", e =>{
+      if(dragged){
+        dragged.style.left = e.pageX - offsetX + "px";
+        dragged.style.top = e.pageY - offsetY + "px";
+      }
+    });
+
+    window.addEventListener("drop", e =>{
+      if(!dragged) return;
+      placeDecoration(e.pageX, e.pageY);
+    });
+
+    // Tactile
+    window.addEventListener("touchmove", e =>{
+      if(!dragged) return;
+      const touch = e.touches[0];
+      dragged.style.left = touch.pageX - offsetX + "px";
+      dragged.style.top = touch.pageY - offsetY + "px";
+    });
+
+    window.addEventListener("touchend", e =>{
+      if(!dragged) return;
+      const touch = e.changedTouches[0];
+      placeDecoration(touch.pageX, touch.pageY);
+    });
+
+    function placeDecoration(x, y){
+      const rect = tree.getBoundingClientRect();
+
+      // Vérifier si la déco est dans le sapin
+      if(!(x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom)){
+        dragged.remove();
+        dragged = null;
+        return;
+      }
+
+      dragged.style.left = x - offsetX + "px";
+      dragged.style.top = y - offsetY + "px";
+      dragged = null;
+    }
+
+    initDecorations();
+  </script>
+</section>
 
 
 
