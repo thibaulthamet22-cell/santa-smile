@@ -162,6 +162,7 @@
         <a href="#carte">Carte à Gratter</a>
         <a href="#berceuse">Berceuse des Lutins</a>
         <a href="#decore-sapin">Décore ton Sapin</a>
+        <a href="#malle">La Malle du Père Noël</a>
 
 
       </nav>
@@ -183,6 +184,7 @@
       <a href="#carte">Carte à Gratter</a>
       <a href="#berceuse">Berceuse des Lutins</a>
       <a href="#decore-sapin">Décore ton Sapin</a>
+      <a href="#malle">La Malle du Père Noël</a>
 
     </nav>
   </header>
@@ -1098,6 +1100,129 @@ Il suffit simplement d’une guitare et d’un peu de douceur. 🎄🧡
     initDecorations();
   </script>
 </section>
+
+
+
+
+
+
+<!-- 🎅 Jeu : Le Sac du Père Noël – Réponses dans le désordre -->
+
+<section id="malle" style="background:#8B0000; padding:20px; text-align:center; color:white;">
+<h1>🎅 La Malle du Père Noël 🎄</h1>
+<p>Aide le Père Noël à remplir sa malle avant la tournée de Noël</p>
+
+<style>
+  .game-box{
+    max-width:400px;
+    margin:20px auto;
+    background:#fff;
+    color:#8B0000;
+    padding:20px;
+    border-radius:15px;
+  }
+  input{
+    width:80%;
+    padding:10px;
+    font-size:16px;
+    border-radius:8px;
+    border:2px solid #8B0000;
+    text-align:center;
+  }
+  button{
+    margin-top:10px;
+    padding:10px 20px;
+    border:none;
+    background:#8B0000;
+    color:white;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+  }
+  .items{
+    margin-top:20px;
+    text-align:left;
+  }
+  .item{
+    padding:8px;
+    border-bottom:1px solid #ddd;
+  }
+  .ok{
+    color:green;
+    font-weight:bold;
+  }
+  .error{
+    color:red;
+    margin-top:10px;
+  }
+  img{
+    width:120px;
+    margin-top:15px;
+  }
+</style>
+
+<div class="game-box">
+  <p id="question">🎁 Que doit apporter le Père Noël ?</p>
+
+  <input type="text" id="answer" placeholder="Ta réponse ici" />
+  <br>
+  <button onclick="checkAnswer()">Valider</button>
+
+  <p id="feedback" class="error"></p>
+
+  <div class="items" id="itemsList">
+    <div class="item" data-answer="biscuits">1️⃣ …</div>
+    <div class="item" data-answer="lait">2️⃣ …</div>
+    <div class="item" data-answer="couverture">3️⃣ …</div>
+    <div class="item" data-answer="lampe">4️⃣ …</div>
+    <div class="item" data-answer="carte du monde">5️⃣ …</div>
+  </div>
+
+  <img id="malleImg"  src="https://image2url.com/images/1765747409704-af547d00-29e4-48d7-8787-0170433f5fc0.jpeg" alt="Malle du Père Noël" style="display:none; width: 350px;height: auto ;">
+</div>
+
+<script>
+const items = document.querySelectorAll(".item");
+
+function checkAnswer(){
+  const input = document.getElementById("answer");
+  const feedback = document.getElementById("feedback");
+  let value = input.value.toLowerCase().trim();
+
+  let found = false;
+
+  items.forEach(item => {
+    if(item.dataset.answer === value && !item.classList.contains("ok")){
+      item.innerHTML = item.dataset.answer + " ✅";
+      item.classList.add("ok");
+      found = true;
+    }
+  });
+
+  if(found){
+    feedback.textContent = "";
+  } else {
+    feedback.textContent = "❌ Ce n’est pas le bon objet ou il a déjà été validé.";
+  }
+
+  input.value = "";
+
+  // Vérifier si tous les objets sont validés
+  const allDone = [...items].every(i => i.classList.contains("ok"));
+  if(allDone){
+    document.getElementById("question").textContent =
+      "🎉 Bravo ! Le Père Noël est prêt pour sa tournée !";
+    document.getElementById("malleImg").style.display = "block";
+    input.style.display = "none";
+  }
+}
+</script>
+</section>
+
+
+
+
+
 
 
 
