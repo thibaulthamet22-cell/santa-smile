@@ -163,6 +163,7 @@
         <a href="#berceuse">Berceuse des Lutins</a>
         <a href="#decore-sapin">Décore ton Sapin</a>
         <a href="#malle">La Malle du Père Noël</a>
+        <a href="#tournée">La Tournée du Père Noël</a>
 
 
       </nav>
@@ -185,6 +186,7 @@
       <a href="#berceuse">Berceuse des Lutins</a>
       <a href="#decore-sapin">Décore ton Sapin</a>
       <a href="#malle">La Malle du Père Noël</a>
+      <a href="#tournée">La Tournée du Père Noël</a>
 
     </nav>
   </header>
@@ -1256,6 +1258,116 @@ function checkAnswer(){
 </script>
 </section>
 
+
+
+
+
+
+
+
+<!-- 🎄 Carte interactive du Père Noël – Sans cadeau -->
+<section id="tournée" style="background:#8B0000; padding:20px; text-align:center; color:white;"></section>
+<section style="background:#8B0000; padding:20px; text-align:center; color:white;">
+  <h1>🌍 La tournée du Père Noël</h1>
+  <p>Dirige le Père Noël sur sa tournée de Noël !</p>
+
+  <style>
+    .map-wrapper{
+      max-width:700px;
+      margin:20px auto;
+      position:relative;
+    }
+    .map-wrapper img{
+      width:100%;
+      height:auto;
+      border-radius:15px;
+    }
+    .santa{
+      position:absolute;
+      font-size:32px;
+      transform: translate(-50%, -50%);
+      transition: left 1s ease, top 1s ease;
+      pointer-events:none;
+    }
+    button{
+      margin:10px;
+      padding:10px 20px;
+      border:none;
+      border-radius:10px;
+      font-weight:bold;
+      cursor:pointer;
+      background:white;
+      color:#8B0000;
+    }
+    .message{
+      margin-top:10px;
+      font-weight:bold;
+    }
+  </style>
+
+  <div class="map-wrapper">
+    <img src="https://image2url.com/images/1765749622794-5378cae9-bf90-4bb8-b5d8-568877b40781.jpeg" alt="Carte du monde">
+    <div id="santa" class="santa">🎅</div>
+  </div>
+
+  <p id="message" class="message">Cliquez sur « Prochain pays » pour guider le Père Noël !</p>
+
+  <button onclick="nextStep()">🎁 Prochain pays</button>
+  <button onclick="restartTour()">🔄 Recommencer</button>
+
+  <!-- Son de cloche -->
+  <audio id="bell-sound" src="https://www.soundjay.com/button/beep-07.mp3"></audio>
+
+  <script>
+    const santa = document.getElementById("santa");
+    const message = document.getElementById("message");
+    const bell = document.getElementById("bell-sound");
+
+    /* Positions en % sur l'image */
+    const tour = [
+      {x:50, y:27, text:"🎄 Départ de la Laponie !"},
+      {x:15, y:22, text:"🎁 Canada"},
+      {x:15, y:35, text:"🎁 États-Unis"},
+      {x:26, y:65, text:"🎁 Mexique"},
+      {x:48, y:38, text:"🎁 Europe"},
+      {x:43, y:38, text:"🎁 France"},
+      {x:48, y:55, text:"🎁 Afrique"},
+      {x:70, y:40, text:"🎁 Asie"},
+      {x:87, y:78, text:"🎁 Australie"},
+      {x:40, y:20, text:"🎁 Groenland"},
+
+      {x:15, y:60, text:"🎉 Fin de la tournée !"}
+    ];
+
+    let step = -1;
+
+    function moveSanta(){
+      const pos = tour[step];
+      santa.style.left = pos.x + "%";
+      santa.style.top = pos.y + "%";
+      message.textContent = pos.text;
+      bell.play();
+    }
+
+    function nextStep(){
+      if(step < tour.length -1){
+        step++;
+        moveSanta();
+      } else {
+        message.textContent = "🎄 La tournée est terminée ! Joyeux Noël !";
+      }
+    }
+
+    function restartTour(){
+      step = -1;
+      santa.style.left = "50%";
+      santa.style.top = "50%";
+      message.textContent = "🎅 La tournée a recommencé ! Cliquez sur Prochain pays.";
+    }
+
+    restartTour();
+  </script>
+</section>
 
 
 
