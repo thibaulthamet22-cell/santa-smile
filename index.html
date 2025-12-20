@@ -556,74 +556,91 @@ Depuis ce soir-là, on raconte qu’à chaque hiver, lorsque la neige chante, Lu
 
   </script>
 
-    <!-- Mémory -->
+    
+<!-- Memory -->
+<section id="mémory" class="fade-in" aria-labelledby="mémory-title" style="max-width:900px; margin:auto; text-align:center;">
 
-    <section id="mémory" class="fade-in" aria-labelledby="mémory-title">
-        
   <style>
+    /* Titres */
+    h1 { 
+      margin-bottom: 10px; 
+      text-align: center;
+    }
 
-
-    h1{margin-bottom:10px;}
-    .memory-grid{
-      display:grid;
+    /* Grille Memory */
+    .memory-grid {
+      display: grid;
       grid-template-columns: repeat(4, 80px);
-      gap:12px;
-      justify-content:center;
-      margin:25px auto;
+      gap: 12px;
+      justify-content: center;
+      margin: 25px auto;
     }
-    .memory-card{
-      width:80px;
-      height:80px;
-      background:#b30000;
-      border-radius:12px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:2.3rem;
-      color:#fff;
-      cursor:pointer;
+
+    /* Cartes Memory */
+    .memory-card {
+      width: 80px;
+      height: 80px;
+      background: #b30000;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.3rem;
+      color: #fff;
+      cursor: pointer;
       transition: transform .3s;
-      user-select:none;
+      user-select: none;
     }
-    .memory-card.revealed{
-      background:#fff;
-      color:#b30000;
-      transform:scale(1.05);
+
+    .memory-card.revealed {
+      background: #fff;
+      color: #b30000;
+      transform: scale(1.05);
     }
-    button{
-      margin-top:15px;
-      padding:10px 20px;
-      border:none;
-      background:#fff;
-      color:#8B0000;
-      border-radius:10px;
-      cursor:pointer;
-      font-weight:bold;
+
+    /* Bouton */
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      border: none;
+      background: #fff;
+      color: #8B0000;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+      display: inline-block;
     }
-    @media(max-width:600px){
-      .memory-grid{ grid-template-columns: repeat(4, 65px); }
-      .memory-card{ width:65px; height:65px; font-size:1.8rem; }
+
+    /* Responsive */
+    @media(max-width: 600px) {
+      .memory-grid { grid-template-columns: repeat(4, 65px); }
+      .memory-card { width: 65px; height: 65px; font-size: 1.8rem; }
     }
   </style>
-</head>
-<body>
-  <h1>🎄 Memory de Noël 🎁</h1>
-  <p style="text-align: center;">Trouve toutes les paires pour gagner</p>
+
+  <h1 id="mémory-title">🎄 Memory de Noël 🎁</h1>
+  <p style="text-align: center; margin-bottom: 20px;">Trouve toutes les paires pour gagner</p>
 
   <div class="memory-grid" id="memoryGrid"></div>
-  <div style="text-align: center;">
-  <button id="restartMemory">🔄 Rejouer</button></div>
+
+  <div style="text-align: center; margin-top: 15px;">
+    <button id="restartMemory">🔄 Rejouer</button>
+  </div>
 
   <script>
     const emojis = ["🎄","🎁","⭐","⛄","🦌","🍪","🔔","🧦"];
-    let memoryGrid = document.getElementById("memoryGrid");
-    let restartBtn = document.getElementById("restartMemory");
+    const memoryGrid = document.getElementById("memoryGrid");
+    const restartBtn = document.getElementById("restartMemory");
 
-    function setupMemory(){
+    let firstPick = null;
+    let lockBoard = false;
+    let matches = 0;
+
+    function setupMemory() {
       memoryGrid.innerHTML = "";
-      const cards = [...emojis, ...emojis].sort(() => Math.random()-0.5);
+      const cards = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
 
-      cards.forEach((emoji, index)=>{
+      cards.forEach((emoji, index) => {
         const card = document.createElement("div");
         card.className = "memory-card";
         card.dataset.emoji = emoji;
@@ -638,35 +655,32 @@ Depuis ce soir-là, on raconte qu’à chaque hiver, lorsque la neige chante, Lu
       matches = 0;
     }
 
-    let firstPick = null;
-    let lockBoard = false;
-    let matches = 0;
-
-    function revealCard(){
-      if(lockBoard) return;
-      if(this.classList.contains("revealed")) return;
+    function revealCard() {
+      if (lockBoard || this.classList.contains("revealed")) return;
 
       this.classList.add("revealed");
       this.textContent = this.dataset.emoji;
 
-      if(!firstPick){
+      if (!firstPick) {
         firstPick = this;
       } else {
         lockBoard = true;
-        if(firstPick.dataset.emoji === this.dataset.emoji){
+        if (firstPick.dataset.emoji === this.dataset.emoji) {
           matches++;
           firstPick = null;
           lockBoard = false;
-          if(matches === emojis.length){ setTimeout(()=> alert("🎉 Bravo ! Tu as gagné !"), 400); }
+          if (matches === emojis.length) {
+            setTimeout(() => alert("🎉 Bravo ! Tu as gagné !"), 400);
+          }
         } else {
-          setTimeout(()=>{
+          setTimeout(() => {
             this.classList.remove("revealed");
             this.textContent = "?";
             firstPick.classList.remove("revealed");
             firstPick.textContent = "?";
             firstPick = null;
             lockBoard = false;
-          },700);
+          }, 700);
         }
       }
     }
@@ -674,6 +688,14 @@ Depuis ce soir-là, on raconte qu’à chaque hiver, lorsque la neige chante, Lu
     restartBtn.addEventListener("click", setupMemory);
     setupMemory();
   </script>
+
+</section>
+
+
+
+
+
+
 
   <br>
   <br>
@@ -719,6 +741,7 @@ Depuis ce soir-là, on raconte qu’à chaque hiver, lorsque la neige chante, Lu
 
 </section>
 
+<br>
 
 <!-- Avent  -->
 
@@ -793,12 +816,12 @@ for(let i=0;i<24;i++){
 
 </script>
 
-<br>
+
 <br>
 
 <!-- Carte -->
 <section id="carte" class="fade-in" aria-labelledby="carte-title" style="max-width:900px; margin:auto; text-align:center;">
-
+ 
   <!-- Titre centré -->
   <h2 id="Carte-title" style="color:var(--muted);">
     Carte à Gratter
@@ -909,10 +932,11 @@ function checkCompletion(){
 }
 
 
-</script>
+</script> 
+</section>
 
 <br>
-<br>
+
 
 <!-- Berceuse -->
 <section id="berceuse" class="fade-in" aria-labelledby="berceuse-title" style="max-width:900px; margin:auto; text-align:center;">
@@ -1264,21 +1288,21 @@ function checkAnswer(){
 
 
 <!-- 🎄 Image du Pöle Nord – Sans cadeau -->
-<section id="polenord" style="background:#8B0000; padding:20px; text-align:center; color:white;"></section>
-<section style="background:#8B0000; padding:20px; text-align:center; color:white;">
+<section id="polenord" style="background:#8B0000; padding:20px; text-align:center; color:white;">
+
   <h1>❄️ Le Pôle Nord ❄️</h1>
  <img src="https://image2url.com/files/1766092929603-7f35792f-d423-484d-9a68-1749ac86a4da.jpg" 
        alt="Voici une belle vue sur le Pôle Nord" 
        style="width:800px; max-width:100%; height:auto; display:block; margin:20px auto 0 auto;">
        
        <p> Voici une Belle vue sur le Pôle Nord</p>
-
+</section>
 
 
 
 <!-- 🎄 Carte interactive du Père Noël – Sans cadeau -->
-<section id="tournée" style="background:#8B0000; padding:20px; text-align:center; color:white;"></section>
-<section style="background:#8B0000; padding:20px; text-align:center; color:white;">
+<section id="tournée" style="background:#8B0000; padding:20px; text-align:center; color:white;">
+ 
   <h1>🌍 La tournée du Père Noël</h1>
   <p>Dirige le Père Noël sur sa tournée de Noël !</p>
 
@@ -1380,6 +1404,10 @@ function checkAnswer(){
 
   </script>
 </section>
+
+
+
+
 
 
 
