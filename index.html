@@ -165,6 +165,7 @@
         <a href="#malle">La Malle du Père Noël</a>
         <a href="#polenord">Le Pôle Nord</a>
         <a href="#tournée">La Tournée du Père Noël</a>
+        <a href="#pacman">Pacman</a>
 
 
       </nav>
@@ -189,6 +190,7 @@
       <a href="#malle">La Malle du Père Noël</a>
       <a href="#polenord">Le Pôle Nord</a>
       <a href="#tournée">La Tournée du Père Noël</a>
+      <a href="#pacman">Pacman</a>
 
     </nav>
   </header>
@@ -1408,6 +1410,275 @@ function checkAnswer(){
   </script>
   </section>
 
+
+
+
+
+<section id="pacman" class="game-container">
+  <h1>🎄 Pac-Man de Noël 🎅</h1>
+  <p>Niveau <span id="level">1</span> / 5 • Score : <span id="score">0</span></p>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="controls">
+    <button data-dir="up">⬆️</button><br>
+    <button data-dir="left">⬅️</button>
+    <button data-dir="down">⬇️</button>
+    <button data-dir="right">➡️</button>
+  </div>
+
+  <button id="nextLevelBtn">🎁 Niveau suivant</button>
+  
+</section>
+
+<style>
+/* 🎄 GLOBAL */
+.game-container{
+  padding:20px;
+  text-align:center;
+  color:white;
+  font-family:Arial, sans-serif;
+  background:linear-gradient(#0b6623, #012d16);
+  border-radius:20px;
+  max-width:420px;
+  margin:auto;
+}
+
+/* 🧩 GRILLE */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(10, 32px);
+  gap:2px;
+  justify-content:center;
+  margin:20px auto;
+}
+
+.cell{
+  width:32px;
+  height:32px;
+  background:#2e2e2e;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  border-radius:6px;
+  transition:transform 0.15s;
+}
+
+.wall{
+  background:#0b3d1e;
+}
+
+/* 🎮 CONTROLES */
+.controls button,
+#nextLevelBtn{
+  padding:10px 15px;
+  margin:5px;
+  font-size:18px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  background:#fff;
+}
+
+.controls button:hover,
+#nextLevelBtn:hover{
+  transform:scale(1.05);
+}
+
+/* 🎅 ANIMATION */
+.pacman{
+  animation: bounce 0.3s infinite alternate;
+}
+
+@keyframes bounce{
+  from{ transform:scale(1); }
+  to{ transform:scale(1.15); }
+}
+</style>
+
+<script>
+/* ⚙️ VARIABLES */
+const grid = document.getElementById("grid");
+const scoreDisplay = document.getElementById("score");
+const levelDisplay = document.getElementById("level");
+const nextBtn = document.getElementById("nextLevelBtn");
+
+const width = 10;
+let score = 0;
+let currentLevel = 0;
+let pacmanIndex = 11;
+let cells = [];
+
+
+
+/* 🗺️ NIVEAUX */
+const levels = [ /* Niveau 1 */ 
+[
+1,1,1,1,1,1,1,1,1,1,
+1,0,0,0,0,0,0,0,0,1,
+1,0,1,1,0,1,1,1,0,1,
+1,0,0,0,0,0,0,1,0,1,
+1,1,1,0,1,1,0,1,0,1,
+1,0,0,0,0,0,0,0,0,1,
+1,0,1,1,1,1,1,1,0,1,
+1,0,0,0,0,0,0,0,0,1,
+1,0,0,1,1,1,0,0,0,1,
+1,1,1,1,1,1,1,1,1,1
+],
+/* NIVEAU 2 */
+[
+1,1,1,1,1,1,1,1,1,1,
+1,0,0,1,0,0,0,1,0,1,
+1,0,1,1,0,1,0,1,0,1,
+1,0,0,0,0,1,0,0,0,1,
+1,1,1,0,1,1,1,1,0,1,
+1,0,0,0,0,0,0,1,0,1,
+1,0,1,1,1,1,0,1,0,1,
+1,0,0,0,0,0,0,0,0,1,
+1,0,1,1,1,1,1,1,0,1,
+1,1,1,1,1,1,1,1,1,1
+],
+
+/* NIVEAU 3 */
+[
+1,1,1,1,1,1,1,1,1,1,
+1,0,0,0,1,0,0,0,0,1,
+1,0,1,0,1,0,1,1,0,1,
+1,0,1,0,0,0,0,1,0,1,
+1,0,1,1,1,1,0,1,0,1,
+1,0,0,0,0,0,0,1,0,1,
+1,1,1,1,0,1,1,1,0,1,
+1,0,0,0,0,0,0,0,0,1,
+1,0,1,1,1,1,1,1,0,1,
+1,1,1,1,1,1,1,1,1,1
+],
+
+/* NIVEAU 4 */
+[
+1,1,1,1,1,1,1,1,1,1,
+1,0,0,1,1,1,0,0,0,1,
+1,0,1,0,0,0,0,1,0,1,
+1,0,1,0,1,1,0,1,0,1,
+1,0,0,0,0,0,0,1,0,1,
+1,1,1,1,0,1,1,1,0,1,
+1,0,0,0,0,0,0,0,0,1,
+1,0,1,1,1,1,1,1,0,1,
+1,0,0,0,0,0,0,0,0,1,
+1,1,1,1,1,1,1,1,1,1
+],
+
+/* NIVEAU 5 */
+[
+1,1,1,1,1,1,1,1,1,1,
+1,0,0,0,0,0,0,0,0,1,
+1,0,1,1,1,1,1,1,0,1,
+1,0,1,0,0,0,0,1,0,1,
+1,0,1,0,1,1,0,1,0,1,
+1,0,0,0,0,0,0,0,0,1,
+1,1,1,1,1,1,1,1,0,1,
+1,0,0,0,0,0,0,0,0,1,
+1,0,1,1,1,1,1,1,0,1,
+1,1,1,1,1,1,1,1,1,1
+]
+
+];
+
+/* 🧱 CHARGEMENT */
+function loadLevel(){
+  grid.innerHTML = "";
+  cells = [];
+  pacmanIndex = 11;
+
+  levels[currentLevel].forEach((value, i)=>{
+    const cell = document.createElement("div");
+    cell.classList.add("cell");
+
+    if(value === 1) cell.classList.add("wall");
+    if(value === 0) cell.textContent = "🎁";
+
+    grid.appendChild(cell);
+    cells.push(cell);
+  });
+
+  drawPacman();
+  updateHUD();
+}
+
+/* 🎅 AFFICHAGE */
+function drawPacman(){
+  cells.forEach(c => c.classList.remove("pacman"));
+  cells[pacmanIndex].textContent = "🎅";
+  cells[pacmanIndex].classList.add("pacman");
+}
+
+/* 🔄 HUD */
+function updateHUD(){
+  scoreDisplay.textContent = score;
+  levelDisplay.textContent = currentLevel + 1;
+}
+
+/* 🎮 MOUVEMENT */
+function move(dir){
+  let next = pacmanIndex;
+
+  if(dir === "left")  next -= 1;
+  if(dir === "right") next += 1;
+  if(dir === "up")    next -= width;
+  if(dir === "down")  next += width;
+
+  if(next < 0 || next >= levels[currentLevel].length) return;
+  if(levels[currentLevel][next] === 1) return;
+
+  cells[pacmanIndex].textContent = "";
+  pacmanIndex = next;
+
+  if(cells[pacmanIndex].textContent === "🎁"){
+    score += 10;
+  }
+
+  drawPacman();
+  updateHUD();
+  checkWin();
+}
+
+/* 🏆 VICTOIRE */
+function checkWin(){
+  if(!cells.some(c => c.textContent === "🎁")){
+    setTimeout(()=>alert("🎉 Niveau terminé !"),300);
+  }
+}
+
+/* ⏭️ NIVEAU SUIVANT */
+nextBtn.onclick = ()=>{
+  if(currentLevel < levels.length - 1){
+    currentLevel++;
+    loadLevel();
+  }else{
+    alert("🎄 Félicitations ! Jeu terminé !");
+  }
+};
+
+/* ⌨️ CLAVIER */
+document.addEventListener("keydown", e=>{
+  if(e.key === "ArrowUp") move("up");
+  if(e.key === "ArrowDown") move("down");
+  if(e.key === "ArrowLeft") move("left");
+  if(e.key === "ArrowRight") move("right");
+});
+
+/* 🖱️ BOUTONS */
+document.querySelectorAll("[data-dir]").forEach(btn=>{
+  btn.onclick = ()=>move(btn.dataset.dir);
+});
+
+loadLevel();
+
+
+
+
+
+</script>
 
 
 
